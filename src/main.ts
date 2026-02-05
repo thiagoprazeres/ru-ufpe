@@ -908,7 +908,7 @@ const renderNav = (activeUnit?: UnitId) => {
     .join("");
 
   return `
-    <div class="navbar">
+    <div class="navbar bg-base-200">
       <div class="navbar-start">
         <a class="btn btn-ghost" href="?">
           <img src="${assets.logoHorizontal}" alt="Restaurante Universitário da UFPE" width="160" height="48" />
@@ -928,7 +928,7 @@ const renderNav = (activeUnit?: UnitId) => {
 
 const renderHero = () => {
   return `
-    <div class="hero">
+    <div class="hero bg-base-200">
       <div class="hero-content">
         <img src="${assets.logoVertical}" alt="RU UFPE" width="160" height="160" />
         <div>
@@ -1029,7 +1029,7 @@ const renderUnitCards = () => {
       const divider = index === 0 ? "" : '<div class="divider"></div>';
       return `
         ${divider}
-        <div class="card card-bordered card-side">
+        <div class="card card-bordered card-side bg-base-100">
           <figure>
             <img src="${unit.highlightImage}" alt="Marca ${unit.shortName}" width="240" height="120" />
           </figure>
@@ -1070,7 +1070,7 @@ const renderNoticeList = () => {
     .join("");
 
   return `
-    <ul class="timeline timeline-vertical">
+    <ul class="timeline timeline-vertical timeline-snap-icon">
       ${items}
     </ul>
   `;
@@ -1101,7 +1101,7 @@ const renderIdentityCarousel = () => {
     .join("");
 
   return `
-    <div class="carousel carousel-center">
+    <div class="carousel carousel-center bg-base-200">
       ${slides}
     </div>
   `;
@@ -1112,7 +1112,7 @@ const renderUnitOverview = (unit: Unit) => {
     ${renderUnitHeader(unit)}
     ${renderUnitTabs(unit, "resumo")}
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Visão rápida</h2>
           ${renderUnitHighlights(unit)}
@@ -1121,7 +1121,7 @@ const renderUnitOverview = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Prato do dia</h2>
           ${renderDailyHighlight(unit)}
@@ -1130,7 +1130,7 @@ const renderUnitOverview = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Público-alvo e pagamento</h2>
           ${renderAudienceCards(unit)}
@@ -1139,7 +1139,7 @@ const renderUnitOverview = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Cadastro biométrico</h2>
           ${renderBiometrics(unit)}
@@ -1148,7 +1148,7 @@ const renderUnitOverview = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Horários de funcionamento</h2>
           ${renderOperation(unit)}
@@ -1157,7 +1157,7 @@ const renderUnitOverview = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Valores por refeição</h2>
           ${renderPricing(unit)}
@@ -1166,7 +1166,7 @@ const renderUnitOverview = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Localização</h2>
           ${renderLocation(unit)}
@@ -1175,7 +1175,7 @@ const renderUnitOverview = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Contato</h2>
           ${renderContacts(unit)}
@@ -1190,7 +1190,7 @@ const renderUnitWeekly = (unit: Unit) => {
     ${renderUnitHeader(unit)}
     ${renderUnitTabs(unit, "semanal")}
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Legenda de cores</h2>
           ${renderWeekLegend()}
@@ -1199,7 +1199,7 @@ const renderUnitWeekly = (unit: Unit) => {
     </section>
     <div class="divider"></div>
     <section>
-      <div class="card card-bordered">
+      <div class="card card-bordered bg-base-100">
         <div class="card-body">
           <h2 class="card-title">Cardápio semanal</h2>
           ${renderWeekSummary(unit)}
@@ -1548,7 +1548,7 @@ const renderSection = (section: MenuSection, index: number) => {
 
 const renderFooter = () => {
   return `
-    <footer class="footer">
+    <footer class="footer bg-base-200">
       <div>
         <img src="${assets.signatureHorizontal}" alt="Universidade Federal de Pernambuco" width="220" height="48" loading="lazy" />
         <p>Restaurante Universitário da UFPE</p>
