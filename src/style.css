@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: false;
+  exclude: properties;
+}
+
+@plugin "daisyui/theme" {
+  name: "ru-ufpe";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+
+  /* Bases */
+  --color-base-100: #ffffff;
+  --color-base-200: #f4f6f7;
+  --color-base-300: #e5eaec;
+  --color-base-content: #1c1c1b;
+
+  /* Brand */
+  --color-primary: #3da0c6;
+  /* Azul frescor */
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #6e9136;
+  /* Verde alface */
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #f1b318;
+  /* Amarelo ovo */
+  --color-accent-content: #1c1c1b;
+
+  /* Neutral */
+  --color-neutral: #3e4d51;
+  /* Cinza panela */
+  --color-neutral-content: #ffffff;
+
+  /* Feedback */
+  --color-info: #3da0c6;
+  --color-info-content: #ffffff;
+
+  --color-success: #6e9136;
+  --color-success-content: #ffffff;
+
+  --color-warning: #f1b318;
+  --color-warning-content: #1c1c1b;
+
+  --color-error: #df4f5d;
+  /* Vermelho melancia */
+  --color-error-content: #ffffff;
+
+  /* Shape */
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+
+  /* Density */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Flat UI */
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
