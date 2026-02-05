@@ -69,6 +69,7 @@ type Unit = {
   };
   operation: OperationHours[];
   pricing: Pricing[];
+  pricingNotes?: string[];
   eligibility: string;
   visitorAccess: string;
   biometrics: BiometricsInfo;
@@ -117,31 +118,39 @@ const assets = {
   mosaic: new URL("./assets/mosaic.svg", import.meta.url).href,
 };
 
-const dayMeta: Record<DayId, { label: string; badge: string; colorName: string }> = {
+const dayMeta: Record<
+  DayId,
+  { label: string; badge: string; colorName: string; step: string }
+> = {
   segunda: {
     label: "Segunda-feira",
     badge: "badge-accent",
     colorName: "Amarelo ovo",
+    step: "step-accent",
   },
   terca: {
     label: "Terça-feira",
     badge: "badge-success",
     colorName: "Verde alface",
+    step: "step-success",
   },
   quarta: {
     label: "Quarta-feira",
     badge: "badge-info",
     colorName: "Azul frescor",
+    step: "step-info",
   },
   quinta: {
     label: "Quinta-feira",
     badge: "badge-error",
     colorName: "Vermelho melancia",
+    step: "step-error",
   },
   sexta: {
     label: "Sexta-feira",
     badge: "badge-neutral",
     colorName: "Cinza panela",
+    step: "step-neutral",
   },
 };
 
@@ -151,12 +160,19 @@ const mealLabels: Record<MealSlot, string> = {
   jantar: "Jantar",
 };
 
+const mealOrder: Record<MealSlot, number> = {
+  desjejum: 0,
+  almoco: 1,
+  jantar: 2,
+};
+
 const audiences: Record<"student" | "visitor", AudienceProfile> = {
   student: {
     label: "Estudantes",
-    paymentShare: "Pagam cerca de 40% do valor de referência (consulte tarifas).",
+    paymentShare:
+      "Subsídio parcial: pagam cerca de 40% do valor de referência. Subsídio integral: isenção total conforme programas de assistência.",
     biometrics: "Cadastramento biométrico obrigatório para acesso.",
-    access: "Voltado a estudantes regularmente matriculados.",
+    access: "Acesso para estudantes regularmente matriculados com cadastro biométrico ativo.",
   },
   visitor: {
     label: "Visitantes",
@@ -168,24 +184,27 @@ const audiences: Record<"student" | "visitor", AudienceProfile> = {
 
 const notices: Notice[] = [
   {
-    date: "24/01/2025",
-    title: "Funcionamento do Restaurante Universitário em 24/01/2025",
+    date: "29/01/2026",
+    title: "Restaurante Universitário do Campus Recife retoma atividades",
   },
   {
-    date: "24/01/2025",
-    title: "RU fechará para dedetização em 26/01/2025",
+    date: "15/04/2025",
+    title:
+      "UFPE informa sobre funcionamento do RU nos feriados de Semana Santa e Tiradentes",
   },
   {
-    date: "16/01/2025",
-    title: "Horário de funcionamento do RU durante o recesso acadêmico",
+    date: "28/02/2025",
+    title:
+      "UFPE divulga funcionamento do Restaurante Universitário no feriado do Carnaval e da Data Magna",
   },
   {
-    date: "08/04/2024",
-    title: "Lista de aprovados: Auxílio Restaurante Universitário (ARU) - 2024.1",
+    date: "05/02/2025",
+    title:
+      "RU dos campi Recife e do Agreste têm funcionamento reduzido devido às chuvas",
   },
   {
-    date: "23/05/2023",
-    title: "Aumento no preço do RU? É falso. Entenda.",
+    date: "19/12/2024",
+    title: "Proaes divulga funcionamento do RU durante o recesso acadêmico",
   },
 ];
 
@@ -197,42 +216,47 @@ const units: Record<UnitId, Unit> = {
     campus: "Campus Recife",
     city: "Recife - PE",
     description:
-      "Atende a comunidade acadêmica do campus Recife com refeições subsidiadas e opção para visitantes.",
+      "Refeições subsidiadas para estudantes e atendimento a servidores e visitantes no campus Recife.",
     links: {
       site: "https://www.ufpe.br/restaurante",
       instagram: "https://www.instagram.com/ruufpe",
       admin: { name: "General Goods", url: "https://ggoods.com.br/" },
     },
     location: {
-      label: "Avenida dos Reitores, Cidade Universitária - Recife/PE (Campus Recife)",
+      label: "Avenida dos Reitores, Cidade Universitária, Recife - PE",
       mapUrl: "https://maps.app.goo.gl/Uyx5pLMnQY6RFXj79",
-      sourceNote: "Localização indicada no campus Recife (Avenida dos Reitores).",
+      sourceNote: "Endereço indicado na página institucional do RU Recife.",
     },
     operation: [
-      { meal: "desjejum", time: "7h às 8h" },
-      { meal: "almoco", time: "11h às 14h30" },
-      { meal: "jantar", time: "17h30 às 20h45" },
+      { meal: "desjejum", time: "07h às 08h" },
+      { meal: "almoco", time: "10h30 às 14h30" },
+      { meal: "jantar", time: "17h às 19h" },
     ],
     pricing: [
-      { meal: "desjejum", student: 2.5, visitor: 5.0 },
-      { meal: "almoco", student: 3.0, visitor: 7.0 },
-      { meal: "jantar", student: 3.0, visitor: 7.0 },
+      { meal: "desjejum", student: 11.09, visitor: 11.09 },
+      { meal: "almoco", student: 4.78, visitor: 12.84 },
+      { meal: "jantar", student: 4.88, visitor: 13.11 },
+    ],
+    pricingNotes: [
+      "Subsídio integral: gratuito para estudantes vinculados a programas de assistência estudantil.",
+      "Desjejum subsidiado exclusivo para estudantes do Programa de Moradia; demais estudantes pagam valor integral.",
     ],
     eligibility:
-      "Estudantes regularmente matriculados, servidores docentes e técnicos administrativos.",
-    visitorAccess: "Visitantes podem utilizar mediante pagamento da tarifa de visitante.",
+      "Subsídio integral: estudantes de graduação vinculados a programas de assistência estudantil (moradia, auxílio permanência, alimentação, creche ou emergencial). Subsídio parcial: estudantes regularmente matriculados na graduação e pós-graduação. Servidores e visitantes pagam valor integral.",
+    visitorAccess:
+      "Servidores e visitantes podem utilizar mediante pagamento integral da refeição.",
     biometrics: {
       title: "Cadastramento facial",
       details: [
-        "Obrigatório para acesso ao RU.",
-        "Realizado no posto de atendimento na entrada do RU.",
+        "Cadastro disponível de segunda a sexta, das 08h às 19h.",
+        "Local: 1ª entrada do RU.",
         "Apresentar documento oficial com foto e comprovante de vínculo com a UFPE.",
-        "Tempo médio de atendimento: 2 minutos por pessoa.",
+        "Ativação em até 24 horas após o cadastro.",
       ],
     },
     contacts: [
       { label: "E-mail", value: "ru@ufpe.br", href: "mailto:ru@ufpe.br" },
-      { label: "Telefone", value: "(81) 2126-7772", href: "tel:+558121267772" },
+      { label: "WhatsApp", value: "(81) 2126-7181", href: "tel:+558121267181" },
     ],
     menuWeek: {
       days: [
@@ -244,7 +268,7 @@ const units: Record<UnitId, Unit> = {
               name: "Cardápio do dia",
               sections: [
                 { title: "Entrada", items: ["Fruta"] },
-                { title: "Salada crua", items: ["Salada crua"] },
+                { title: "Salada crua", items: ["Salada crua", "Salada crua"] },
                 {
                   title: "Salada cozida",
                   items: ["Batata, beterraba e chuchu"],
@@ -307,7 +331,7 @@ const units: Record<UnitId, Unit> = {
               name: "Cardápio do dia",
               sections: [
                 { title: "Entrada", items: ["Fruta"] },
-                { title: "Salada crua", items: ["Salada crua"] },
+                { title: "Salada crua", items: ["Salada crua", "Salada crua"] },
                 {
                   title: "Salada cozida",
                   items: ["Abobrinha, beterraba e chuchu"],
@@ -317,7 +341,7 @@ const units: Record<UnitId, Unit> = {
                   items: [
                     "Ovos mexidos",
                     "Homus",
-                    "Peixe à dorê",
+                    "Peixe à dorê (contém glúten)",
                     "Moqueca de banana",
                     "Frango ao forno",
                     "Bolonhesa de lentilha",
@@ -326,29 +350,28 @@ const units: Record<UnitId, Unit> = {
                 {
                   title: "Guarnição",
                   items: [
-                    "Macaxeira",
-                    "Feijão mulatinho",
-                    "Arroz",
-                    "Espaguete ao alho e óleo (contém glúten)",
                     "Cuscuz",
+                    "Feijão macassar",
+                    "Arroz branco",
+                    "Arroz refogado",
+                    "Macaxeira",
                   ],
                 },
                 {
                   title: "Acompanhamento",
                   items: [
-                    "Farofa de cuscuz",
-                    "Sopa de feijão vegetariana (contém glúten)",
-                    "Caldo verde",
+                    "Pirão de peixe",
+                    "Creme de batata",
+                    "Sopa de legumes com carne (contém glúten)",
                   ],
                 },
-                { title: "Sobremesa", items: ["Fruta"] },
+                { title: "Sobremesa", items: ["Gelatina de morango"] },
                 {
                   title: "Bebida",
                   items: [
-                    "Achocolatado (contém lactose)",
+                    "Suco",
                     "Café",
                     "Café com leite (contém lactose)",
-                    "Suco",
                   ],
                 },
                 {
@@ -370,45 +393,45 @@ const units: Record<UnitId, Unit> = {
               name: "Cardápio do dia",
               sections: [
                 { title: "Entrada", items: ["Fruta"] },
-                { title: "Salada crua", items: ["Salada crua"] },
+                { title: "Salada crua", items: ["Salada crua", "Salada crua"] },
                 {
                   title: "Salada cozida",
-                  items: ["Abobrinha, repolho e chuchu"],
+                  items: ["Batata, abóbora e vagem"],
                 },
                 {
                   title: "Prato principal",
                   items: [
-                    "Queijo prato (contém lactose)",
+                    "Queijo prato",
                     "Pasta de amendoim",
-                    "Frango ao molho de queijo (contém lactose)",
-                    "Moqueca de banana",
-                    "Peixe em iscas",
-                    "Fricassê de soja (contém lactose)",
+                    "Frango ao molho de queijo (contém glúten e lactose)",
+                    "Lentilha com cebolas caramelizadas",
+                    "Toscana acebolada",
+                    "Empadão vegano (contém glúten)",
                   ],
                 },
                 {
                   title: "Guarnição",
                   items: [
-                    "Macaxeira",
-                    "Feijão mulatinho",
+                    "Banana comprida",
+                    "Feijão preto",
                     "Arroz com cenoura",
-                    "Espaguete ao alho e óleo (contém glúten)",
-                    "Cuscuz",
+                    "Arroz branco",
+                    "Cará",
                   ],
                 },
                 {
                   title: "Acompanhamento",
                   items: [
-                    "Farofa de cuscuz",
-                    "Sopa de feijão vegetariana (contém glúten)",
-                    "Creme de legumes",
+                    "Farofa com batata palha",
+                    "Sopa de legumes (contém glúten)",
+                    "Sopa creme de macaxeira com charque (contém lactose)",
                   ],
                 },
-                { title: "Sobremesa", items: ["Doce"] },
+                { title: "Sobremesa", items: ["Fruta"] },
                 {
                   title: "Bebida",
                   items: [
-                    "Achocolatado (contém lactose)",
+                    "Bebida láctea (contém lactose)",
                     "Café",
                     "Café com leite (contém lactose)",
                     "Suco",
@@ -433,7 +456,7 @@ const units: Record<UnitId, Unit> = {
               name: "Cardápio do dia",
               sections: [
                 { title: "Entrada", items: ["Fruta"] },
-                { title: "Salada crua", items: ["Salada crua"] },
+                { title: "Salada crua", items: ["Salada crua", "Salada crua"] },
                 {
                   title: "Salada cozida",
                   items: ["Repolho, batata doce e cenoura"],
@@ -452,29 +475,28 @@ const units: Record<UnitId, Unit> = {
                 {
                   title: "Guarnição",
                   items: [
-                    "Macaxeira",
-                    "Feijão mulatinho",
-                    "Arroz",
+                    "Cará",
+                    "Feijão macassar",
+                    "Arroz com vagem",
                     "Espaguete ao alho e óleo (contém glúten)",
-                    "Cuscuz",
+                    "Batata doce",
                   ],
                 },
                 {
                   title: "Acompanhamento",
                   items: [
-                    "Farofa de cuscuz",
-                    "Sopa de feijão vegetariana (contém glúten)",
-                    "Caldo de legumes",
+                    "Espaguete ao alho e óleo (contém glúten)",
+                    "Caldo verde",
+                    "Sopa de feijão com carne (contém glúten)",
                   ],
                 },
                 { title: "Sobremesa", items: ["Fruta"] },
                 {
                   title: "Bebida",
                   items: [
-                    "Achocolatado (contém lactose)",
+                    "Suco",
                     "Café",
                     "Café com leite (contém lactose)",
-                    "Suco",
                   ],
                 },
                 {
@@ -496,7 +518,7 @@ const units: Record<UnitId, Unit> = {
               name: "Cardápio do dia",
               sections: [
                 { title: "Entrada", items: ["Fruta"] },
-                { title: "Salada crua", items: ["Salada crua"] },
+                { title: "Salada crua", items: ["Salada crua", "Salada crua"] },
                 {
                   title: "Salada cozida",
                   items: ["Abobrinha, cenoura e chuchu"],
@@ -507,37 +529,34 @@ const units: Record<UnitId, Unit> = {
                     "Cubos de frango ao molho",
                     "Antepasto de pimentão",
                     "Cassoulet",
-                    "Quiche de cebola",
+                    "Quiche de cebola (contém glúten)",
                     "Suíno ao molho de abacaxi",
-                    "Lasanha de soja",
+                    "Lasanha de soja (contém glúten e lactose)",
                   ],
                 },
                 {
                   title: "Guarnição",
                   items: [
-                    "Macaxeira",
-                    "Feijão mulatinho",
-                    "Arroz",
-                    "Espaguete ao alho e óleo (contém glúten)",
                     "Cuscuz",
+                    "Feijão mulatinho",
+                    "Arroz refogado",
                   ],
                 },
                 {
                   title: "Acompanhamento",
                   items: [
-                    "Farofa de cuscuz",
-                    "Sopa de feijão vegetariana (contém glúten)",
-                    "Caldo de batata com legumes",
+                    "Farofa com banana",
+                    "Sopa de lentilha",
+                    "Munguzá (contém lactose)",
                   ],
                 },
-                { title: "Sobremesa", items: ["Doce"] },
+                { title: "Sobremesa", items: ["Doce de banana"] },
                 {
                   title: "Bebida",
                   items: [
-                    "Achocolatado (contém lactose)",
+                    "Suco",
                     "Café",
                     "Café com leite (contém lactose)",
-                    "Suco",
                   ],
                 },
                 {
@@ -563,37 +582,43 @@ const units: Record<UnitId, Unit> = {
     campus: "Centro Acadêmico do Agreste",
     city: "Caruaru - PE",
     description:
-      "Atende a comunidade acadêmica do CAA com refeições subsidiadas e opção para visitantes.",
+      "Refeições subsidiadas para estudantes do CAA e atendimento a servidores e visitantes.",
     links: {
       site: "https://www.ufpe.br/rucaa",
     },
     location: {
-      label: "Rodovia BR-104, Km 59, S/N - Nova Caruaru, Caruaru - PE",
+      label: "Rodovia BR-104, Km 59, Nova Caruaru, Caruaru - PE",
       mapUrl: "https://maps.app.goo.gl/V9XQUAxXNouADMyV9",
-      sourceNote: "Endereço do campus CAA indicado na documentação institucional.",
+      sourceNote: "Endereço indicado na página institucional do RU CAA.",
     },
     operation: [
-      { meal: "desjejum", time: "6h30 às 8h" },
-      { meal: "almoco", time: "11h às 14h" },
-      { meal: "jantar", time: "17h às 19h" },
+      { meal: "almoco", time: "11h às 14h30" },
+      { meal: "jantar", time: "17h30 às 20h45" },
     ],
     pricing: [
-      { meal: "desjejum", student: 2.0, visitor: 4.0 },
-      { meal: "almoco", student: 2.5, visitor: 6.0 },
-      { meal: "jantar", student: 2.5, visitor: 6.0 },
+      { meal: "almoco", student: 5.35, visitor: 14.01 },
+      { meal: "jantar", student: 4.76, visitor: 12.47 },
+    ],
+    pricingNotes: [
+      "Valores para estudantes com subsídio parcial (pagamento de 40% do valor de referência).",
+      "Servidores e visitantes pagam o valor integral da refeição.",
     ],
     eligibility:
-      "Estudantes regularmente matriculados, servidores docentes e técnicos administrativos.",
-    visitorAccess: "Visitantes podem utilizar mediante pagamento da tarifa de visitante.",
+      "Subsídio parcial: estudantes regularmente matriculados no CAA. Servidores e visitantes pagam valor integral.",
+    visitorAccess:
+      "Servidores e visitantes podem utilizar mediante pagamento integral da refeição.",
     biometrics: {
       title: "Cadastramento biométrico",
       details: [
-        "Obrigatório para usuários da comunidade acadêmica.",
-        "Aplica-se a estudantes, docentes e servidores técnicos administrativos.",
+        "Cadastro realizado no caixa do RU.",
+        "Necessário apresentar documento oficial com foto e CPF.",
+        "Horários: 11h às 14h30 e 15h30 às 20h15 (segunda a sexta).",
+        "Usuário liberado após validação do cadastro.",
       ],
     },
     contacts: [
       { label: "E-mail", value: "ru.caa@ufpe.br", href: "mailto:ru.caa@ufpe.br" },
+      { label: "Telefone", value: "(81) 2103-9150", href: "tel:+558121039150" },
     ],
     capacity: "Capacidade de 900 refeições por dia.",
     menuWeek: {
@@ -603,33 +628,39 @@ const units: Record<UnitId, Unit> = {
           dateLabel: "15/12/25",
           meals: [
             {
-              name: "Desjejum",
-              time: "6h30 às 8h",
-              sections: [
-                { title: "Bebida", items: ["Café ou leite"] },
-                { title: "Cuscuz", items: ["Cuscuz"] },
-                { title: "Acompanhamento", items: ["Ovos"] },
-                { title: "Complemento", items: ["Macaxeira"] },
-              ],
-            },
-            {
               name: "Almoço",
-              time: "11h às 14h",
+              time: "11h às 14h30",
               sections: [
-                { title: "Prato principal", items: ["Carne assada"] },
-                { title: "Vegetariano", items: ["Feijoada vegana"] },
-                { title: "Guarnição", items: ["Legumes salteados"] },
+                {
+                  title: "Entrada",
+                  items: [
+                    "Salada de alface, tomate e pepino",
+                    "Sopa de carne",
+                    "Creme de legumes com ervilha",
+                  ],
+                },
+                {
+                  title: "Prato principal",
+                  items: [
+                    "Almôndegas de carne ao sugo",
+                    "Ovos mexidos com verduras",
+                    "Fricassê de frango (contém lactose e glúten)",
+                    "Gratinado de soja (contém lactose e glúten)",
+                  ],
+                },
+                { title: "Guarnição", items: ["Legumes refogados"] },
+                {
+                  title: "Acompanhamento",
+                  items: [
+                    "Arroz carioca",
+                    "Feijão macassar",
+                    "Espaguete com açafrão (contém glúten)",
+                    "Arroz colorido",
+                  ],
+                },
                 { title: "Sobremesa", items: ["Fruta"] },
-              ],
-            },
-            {
-              name: "Jantar",
-              time: "17h às 19h",
-              sections: [
-                { title: "Prato principal", items: ["Carne ao molho"] },
-                { title: "Vegetariano", items: ["Yakisoba de legumes"] },
-                { title: "Guarnição", items: ["Purê de macaxeira"] },
-                { title: "Sobremesa", items: ["Fruta"] },
+                { title: "Bebida", items: ["Refresco", "Café/Refresco"] },
+                { title: "Complemento", items: ["Pão francês (contém glúten)"] },
               ],
             },
           ],
@@ -639,33 +670,42 @@ const units: Record<UnitId, Unit> = {
           dateLabel: "16/12/25",
           meals: [
             {
-              name: "Desjejum",
-              time: "6h30 às 8h",
-              sections: [
-                { title: "Bebida", items: ["Café ou leite"] },
-                { title: "Cuscuz", items: ["Cuscuz"] },
-                { title: "Acompanhamento", items: ["Ovos"] },
-                { title: "Complemento", items: ["Macaxeira"] },
-              ],
-            },
-            {
               name: "Almoço",
-              time: "11h às 14h",
+              time: "11h às 14h30",
               sections: [
-                { title: "Prato principal", items: ["Frango ao molho"] },
-                { title: "Vegetariano", items: ["Hamburguer de lentilha"] },
-                { title: "Guarnição", items: ["Farofa"] },
-                { title: "Sobremesa", items: ["Doce"] },
-              ],
-            },
-            {
-              name: "Jantar",
-              time: "17h às 19h",
-              sections: [
-                { title: "Prato principal", items: ["Hambúrguer de carne"] },
-                { title: "Vegetariano", items: ["Omelete"] },
-                { title: "Guarnição", items: ["Batata palha"] },
-                { title: "Sobremesa", items: ["Doce"] },
+                {
+                  title: "Entrada",
+                  items: [
+                    "Salada crua",
+                    "Caldo verde com calabresa",
+                    "Sopa de feijão (contém glúten)",
+                  ],
+                },
+                {
+                  title: "Prato principal",
+                  items: [
+                    "Frango guisado",
+                    "Lasanha de soja (contém glúten e lactose)",
+                    "Carne moída com legumes",
+                    "Ovos mexidos ao molho de tomate",
+                  ],
+                },
+                {
+                  title: "Guarnição",
+                  items: ["Purê de macaxeira (contém lactose)"],
+                },
+                {
+                  title: "Acompanhamento",
+                  items: [
+                    "Arroz com cenoura",
+                    "Feijão carioca",
+                    "Espaguete com açafrão (contém glúten)",
+                    "Cuscuz",
+                  ],
+                },
+                { title: "Sobremesa", items: ["Fruta"] },
+                { title: "Bebida", items: ["Refresco", "Café"] },
+                { title: "Complemento", items: ["Pão francês (contém glúten)"] },
               ],
             },
           ],
@@ -675,33 +715,42 @@ const units: Record<UnitId, Unit> = {
           dateLabel: "17/12/25",
           meals: [
             {
-              name: "Desjejum",
-              time: "6h30 às 8h",
-              sections: [
-                { title: "Bebida", items: ["Café ou leite"] },
-                { title: "Cuscuz", items: ["Cuscuz"] },
-                { title: "Acompanhamento", items: ["Ovos"] },
-                { title: "Complemento", items: ["Macaxeira"] },
-              ],
-            },
-            {
               name: "Almoço",
-              time: "11h às 14h",
+              time: "11h às 14h30",
               sections: [
-                { title: "Prato principal", items: ["Bife ao molho"] },
-                { title: "Vegetariano", items: ["Macarronada de legumes"] },
-                { title: "Guarnição", items: ["Feijão verde"] },
-                { title: "Sobremesa", items: ["Fruta"] },
-              ],
-            },
-            {
-              name: "Jantar",
-              time: "17h às 19h",
-              sections: [
-                { title: "Prato principal", items: ["Carne moída"] },
-                { title: "Vegetariano", items: ["Escondidinho de legumes"] },
-                { title: "Guarnição", items: ["Arroz"] },
-                { title: "Sobremesa", items: ["Fruta"] },
+                {
+                  title: "Entrada",
+                  items: [
+                    "Salada refogada",
+                    "Sopa de peixe",
+                    "Caldo de feijão com azeitonas",
+                  ],
+                },
+                {
+                  title: "Prato principal",
+                  items: [
+                    "Peito de frango ao molho mostarda (contém glúten)",
+                    "Almôndega de grão-de-bico",
+                    "Torta Madalena de carne (contém lactose)",
+                    "Torta de repolho (contém lactose e glúten)",
+                  ],
+                },
+                { title: "Guarnição", items: ["Farofa de cuscuz"] },
+                {
+                  title: "Acompanhamento",
+                  items: [
+                    "Arroz com açafrão",
+                    "Feijão preto",
+                    "Espaguete colorido (contém glúten)",
+                    "Espaguete ao alho e óleo",
+                  ],
+                },
+                { title: "Sobremesa", items: ["Fruta/Doce", "Fruta"] },
+                { title: "Bebida", items: ["Refresco", "Café"] },
+                {
+                  title: "Complemento",
+                  items: ["Bolo de laranja (contém glúten e lactose)"],
+                },
               ],
             },
           ],
@@ -711,33 +760,39 @@ const units: Record<UnitId, Unit> = {
           dateLabel: "18/12/25",
           meals: [
             {
-              name: "Desjejum",
-              time: "6h30 às 8h",
-              sections: [
-                { title: "Bebida", items: ["Café ou leite"] },
-                { title: "Cuscuz", items: ["Cuscuz"] },
-                { title: "Acompanhamento", items: ["Ovos"] },
-                { title: "Complemento", items: ["Macaxeira"] },
-              ],
-            },
-            {
               name: "Almoço",
-              time: "11h às 14h",
+              time: "11h às 14h30",
               sections: [
-                { title: "Prato principal", items: ["Filé de peixe"] },
-                { title: "Vegetariano", items: ["Strogonoff de legumes"] },
-                { title: "Guarnição", items: ["Legumes salteados"] },
-                { title: "Sobremesa", items: ["Doce"] },
-              ],
-            },
-            {
-              name: "Jantar",
-              time: "17h às 19h",
-              sections: [
-                { title: "Prato principal", items: ["Frango assado"] },
-                { title: "Vegetariano", items: ["Ovo mexido"] },
-                { title: "Guarnição", items: ["Purê de batata"] },
-                { title: "Sobremesa", items: ["Doce"] },
+                {
+                  title: "Entrada",
+                  items: [
+                    "Salada crua",
+                    "Creme de batata com cebola",
+                    "Sopa de charque (contém glúten)",
+                  ],
+                },
+                {
+                  title: "Prato principal",
+                  items: [
+                    "Isca bovina com calabresa e abacaxi",
+                    "Escondidinho de lentilha",
+                    "Frango guisado",
+                    "Soja à bolonhesa",
+                  ],
+                },
+                { title: "Guarnição", items: ["Batata rústica"] },
+                {
+                  title: "Acompanhamento",
+                  items: [
+                    "Arroz com vagem",
+                    "Feijão tropeiro",
+                    "Espaguete colorido (contém glúten)",
+                    "Macaxeira cozida",
+                  ],
+                },
+                { title: "Sobremesa", items: ["Fruta"] },
+                { title: "Bebida", items: ["Refresco", "Café"] },
+                { title: "Complemento", items: ["Torrada (contém glúten)"] },
               ],
             },
           ],
@@ -747,39 +802,51 @@ const units: Record<UnitId, Unit> = {
           dateLabel: "19/12/25",
           meals: [
             {
-              name: "Desjejum",
-              time: "6h30 às 8h",
-              sections: [
-                { title: "Bebida", items: ["Café ou leite"] },
-                { title: "Cuscuz", items: ["Cuscuz"] },
-                { title: "Acompanhamento", items: ["Ovos"] },
-                { title: "Complemento", items: ["Macaxeira"] },
-              ],
-            },
-            {
               name: "Almoço",
-              time: "11h às 14h",
+              time: "11h às 14h30",
               sections: [
-                { title: "Prato principal", items: ["Carne ao molho"] },
-                { title: "Vegetariano", items: ["Feijoada vegana"] },
-                { title: "Guarnição", items: ["Legumes salteados"] },
-                { title: "Sobremesa", items: ["Fruta"] },
-              ],
-            },
-            {
-              name: "Jantar",
-              time: "17h às 19h",
-              sections: [
-                { title: "Prato principal", items: ["Peixe frito"] },
-                { title: "Vegetariano", items: ["Escondidinho de legumes"] },
-                { title: "Guarnição", items: ["Purê de macaxeira"] },
-                { title: "Sobremesa", items: ["Fruta"] },
+                {
+                  title: "Entrada",
+                  items: [
+                    "Salada crua",
+                    "Sopa de legumes (contém glúten)",
+                    "Canja de galinha",
+                  ],
+                },
+                {
+                  title: "Prato principal",
+                  items: [
+                    "Lasanha à bolonhesa (contém glúten e lactose)",
+                    "Quiche de alho-poró (contém glúten e lactose)",
+                    "Isca de carne com verduras",
+                    "Quiche de chuchu e cenoura (contém glúten e lactose)",
+                  ],
+                },
+                {
+                  title: "Guarnição",
+                  items: ["Maionese de legumes (contém lactose)"],
+                },
+                {
+                  title: "Acompanhamento",
+                  items: [
+                    "Arroz com açafrão",
+                    "Feijão carioca",
+                    "Macarrão ao molho de tomate (contém glúten)",
+                    "Batata doce",
+                  ],
+                },
+                { title: "Sobremesa", items: ["Fruta/Doce", "Fruta"] },
+                { title: "Bebida", items: ["Refresco", "Café"] },
+                { title: "Complemento", items: ["Pão francês (contém glúten)"] },
               ],
             },
           ],
         },
       ],
-      notes: ["O cardápio está sujeito a alterações."],
+      notes: [
+        "O cardápio está sujeito a alterações.",
+        "Cardápio publicado na página do RU CAA refere-se ao almoço.",
+      ],
     },
     highlightImage: assets.brandDark,
   },
@@ -875,7 +942,29 @@ const renderHero = () => {
             <a class="btn btn-secondary" href="?unidade=caa">Entrar no RU CAA</a>
           </div>
         </div>
-        <img src="${assets.mosaic}" alt="Mosaico institucional" width="180" height="180" />
+        ${renderHeroStats()}
+      </div>
+    </div>
+  `;
+};
+
+const renderHeroStats = () => {
+  return `
+    <div class="stats stats-vertical">
+      <div class="stat">
+        <div class="stat-title">Unidades</div>
+        <div class="stat-value">2</div>
+        <div class="stat-desc">Recife e CAA</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Cardápio</div>
+        <div class="stat-value">Semanal</div>
+        <div class="stat-desc">Segunda a sexta</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Acesso</div>
+        <div class="stat-value">Biometria</div>
+        <div class="stat-desc">Obrigatória para estudantes</div>
       </div>
     </div>
   `;
@@ -884,7 +973,16 @@ const renderHero = () => {
 const renderHome = () => {
   return `
     ${renderHero()}
-    <div class="divider"></div>
+    <div class="divider">Como funciona</div>
+    <section id="fluxo">
+      <div class="card card-bordered">
+        <div class="card-body">
+          <h2 class="card-title">Fluxo de acesso</h2>
+          ${renderAccessSteps()}
+        </div>
+      </div>
+    </section>
+    <div class="divider">Unidades</div>
     <section id="unidades">
       <div class="card card-bordered">
         <div class="card-body">
@@ -893,7 +991,7 @@ const renderHome = () => {
         </div>
       </div>
     </section>
-    <div class="divider"></div>
+    <div class="divider">Avisos</div>
     <section id="avisos">
       <div class="card card-bordered">
         <div class="card-body">
@@ -902,7 +1000,7 @@ const renderHome = () => {
         </div>
       </div>
     </section>
-    <div class="divider"></div>
+    <div class="divider">Identidade visual</div>
     <section id="identidade">
       <div class="card card-bordered">
         <div class="card-body">
@@ -914,13 +1012,24 @@ const renderHome = () => {
   `;
 };
 
+const renderAccessSteps = () => {
+  return `
+    <ul class="steps steps-vertical">
+      <li class="step step-primary">Escolha a unidade do RU</li>
+      <li class="step step-secondary">Realize o cadastro biométrico (estudantes)</li>
+      <li class="step step-accent">Pague a tarifa conforme seu perfil</li>
+      <li class="step step-info">Retire sua refeição</li>
+    </ul>
+  `;
+};
+
 const renderUnitCards = () => {
   return (Object.values(units) as Unit[])
     .map((unit, index) => {
       const divider = index === 0 ? "" : '<div class="divider"></div>';
       return `
         ${divider}
-        <div class="card card-bordered">
+        <div class="card card-bordered card-side">
           <figure>
             <img src="${unit.highlightImage}" alt="Marca ${unit.shortName}" width="240" height="120" />
           </figure>
@@ -940,18 +1049,28 @@ const renderUnitCards = () => {
 
 const renderNoticeList = () => {
   const items = notices
-    .map((notice) => {
+    .map((notice, index) => {
+      const isFirst = index === 0;
+      const isLast = index === notices.length - 1;
+      const marker = index === 0 ? "badge-primary" : "badge-outline";
       return `
         <li>
-          <span class="badge badge-outline">${notice.date}</span>
-          <span>${notice.title}</span>
+          ${isFirst ? "" : "<hr />"}
+          <div class="timeline-start">
+            <span class="badge badge-outline">${notice.date}</span>
+          </div>
+          <div class="timeline-middle">
+            <span class="badge ${marker}"></span>
+          </div>
+          <div class="timeline-end timeline-box">${notice.title}</div>
+          ${isLast ? "" : "<hr />"}
         </li>
       `;
     })
     .join("");
 
   return `
-    <ul class="menu">
+    <ul class="timeline timeline-vertical">
       ${items}
     </ul>
   `;
@@ -968,6 +1087,7 @@ const renderIdentityCarousel = () => {
     { src: assets.cutlery, alt: "Ícone de pratos" },
     { src: assets.desserts, alt: "Ícone de sobremesa" },
     { src: assets.frutas, alt: "Ícone de frutas" },
+    { src: assets.mosaic, alt: "Mosaico institucional" },
   ];
 
   const slides = items
@@ -981,7 +1101,7 @@ const renderIdentityCarousel = () => {
     .join("");
 
   return `
-    <div class="carousel">
+    <div class="carousel carousel-center">
       ${slides}
     </div>
   `;
@@ -991,6 +1111,15 @@ const renderUnitOverview = (unit: Unit) => {
   return `
     ${renderUnitHeader(unit)}
     ${renderUnitTabs(unit, "resumo")}
+    <section>
+      <div class="card card-bordered">
+        <div class="card-body">
+          <h2 class="card-title">Visão rápida</h2>
+          ${renderUnitHighlights(unit)}
+        </div>
+      </div>
+    </section>
+    <div class="divider"></div>
     <section>
       <div class="card card-bordered">
         <div class="card-body">
@@ -1098,6 +1227,10 @@ const renderUnitHeader = (unit: Unit) => {
           </div>
           <h1 class="card-title">${unit.name}</h1>
           <p>${unit.description}</p>
+          <div class="join">
+            <span class="badge badge-outline join-item">${unit.campus}</span>
+            <span class="badge badge-outline join-item">${unit.city}</span>
+          </div>
           <div class="card-actions">
             <a class="btn btn-outline" href="${unit.links.site}" target="_blank" rel="noopener">Página atual</a>
             ${
@@ -1120,9 +1253,32 @@ const renderUnitHeader = (unit: Unit) => {
 
 const renderUnitTabs = (unit: Unit, active: "resumo" | "semanal") => {
   return `
-    <div class="tabs">
+    <div class="tabs tabs-boxed">
       <a class="tab ${active === "resumo" ? "tab-active" : ""}" href="?unidade=${unit.id}">Resumo</a>
       <a class="tab ${active === "semanal" ? "tab-active" : ""}" href="?unidade=${unit.id}&view=semanal">Cardápio semanal</a>
+    </div>
+  `;
+};
+
+const renderUnitHighlights = (unit: Unit) => {
+  const operationSummary = buildOperationSummary(unit);
+  return `
+    <div class="stats stats-vertical">
+      <div class="stat">
+        <div class="stat-title">Horários publicados</div>
+        <div class="stat-value">Funcionamento</div>
+        <div class="stat-desc">${operationSummary}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Estudantes</div>
+        <div class="stat-value">${getMinPrice(unit.pricing, "student")}</div>
+        <div class="stat-desc">Menor tarifa publicada</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Visitantes</div>
+        <div class="stat-value">${getMinPrice(unit.pricing, "visitor")}</div>
+        <div class="stat-desc">Menor tarifa publicada</div>
+      </div>
     </div>
   `;
 };
@@ -1201,7 +1357,8 @@ const renderBiometrics = (unit: Unit) => {
 };
 
 const renderOperation = (unit: Unit) => {
-  const stats = unit.operation
+  const stats = [...unit.operation]
+    .sort((a, b) => mealOrder[a.meal] - mealOrder[b.meal])
     .map((slot) => {
       return `
         <div class="stat">
@@ -1220,7 +1377,8 @@ const renderOperation = (unit: Unit) => {
 };
 
 const renderPricing = (unit: Unit) => {
-  const rows = unit.pricing
+  const rows = [...unit.pricing]
+    .sort((a, b) => mealOrder[a.meal] - mealOrder[b.meal])
     .map((price) => {
       return `
         <tr>
@@ -1232,19 +1390,31 @@ const renderPricing = (unit: Unit) => {
     })
     .join("");
 
+  const notes =
+    unit.pricingNotes && unit.pricingNotes.length
+      ? `
+        <div class="alert alert-info">
+          <ul class="menu">
+            ${unit.pricingNotes.map((note) => `<li>${note}</li>`).join("")}
+          </ul>
+        </div>
+      `
+      : "";
+
   return `
     <table class="table">
       <thead>
         <tr>
           <th>Refeição</th>
-          <th>Estudante</th>
-          <th>Visitante</th>
+          <th>Estudante (subsídio parcial)</th>
+          <th>Visitante/Servidor</th>
         </tr>
       </thead>
       <tbody>
         ${rows}
       </tbody>
     </table>
+    ${notes}
   `;
 };
 
@@ -1277,14 +1447,17 @@ const renderContacts = (unit: Unit) => {
 };
 
 const renderWeekLegend = () => {
-  const badges = (Object.keys(dayMeta) as DayId[])
-    .map((dayId) => renderDayBadge(dayId))
+  const steps = (Object.keys(dayMeta) as DayId[])
+    .map((dayId) => {
+      const meta = dayMeta[dayId];
+      return `<li class="step ${meta.step}" title="${meta.colorName}">${meta.label}</li>`;
+    })
     .join("");
 
   return `
-    <div class="join">
-      ${badges}
-    </div>
+    <ul class="steps steps-vertical">
+      ${steps}
+    </ul>
   `;
 };
 
@@ -1320,7 +1493,7 @@ const renderWeeklyMenu = (unit: Unit) => {
     .map((day, index) => {
       const checked = index === 0 ? "checked" : "";
       return `
-        <div class="collapse collapse-arrow">
+        <div class="collapse collapse-plus">
           <input type="radio" name="menu-${unit.id}" ${checked} />
           <div class="collapse-title">
             <div class="join">
@@ -1397,6 +1570,21 @@ const renderFooter = () => {
 const renderDayBadge = (dayId: DayId) => {
   const meta = dayMeta[dayId];
   return `<span class="badge ${meta.badge} join-item" title="${meta.colorName}">${meta.label}</span>`;
+};
+
+const buildOperationSummary = (unit: Unit) => {
+  return unit.operation
+    .map((slot) => `${mealLabels[slot.meal]}: ${slot.time}`)
+    .join(" • ");
+};
+
+const getMinPrice = (prices: Pricing[], key: "student" | "visitor") => {
+  if (!prices.length) {
+    return "Consulte";
+  }
+  const values = prices.map((price) => price[key]);
+  const minValue = Math.min(...values);
+  return currencyFormatter.format(minValue);
 };
 
 const parseDateLabel = (label: string, fallbackYear: number) => {
